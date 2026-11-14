@@ -14,7 +14,7 @@ ESTADOS_PAQUETE = (
 )
 
 class GuiaEnvio(models.Model):
-    numero_guia = models.CharField(max_length=30, null=True, blank=True)
+    numero_guia = models.CharField(max_length=30, null=True, blank=True, unique=True)
     remitente = models.ForeignKey(User, on_delete=models.CASCADE, related_name="remitentes")
     destinatario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="destinatarios")
 
@@ -36,7 +36,7 @@ class GuiaEnvio(models.Model):
 
     def save(self, *args, **kwards):
         if not self.numero_guia:
-            self.numero_guia =  uuid4().hex[:8].upper()
+            self.numero_guia =  uuid4().hex.upper()
 
         super().save(*args,**kwards)
 

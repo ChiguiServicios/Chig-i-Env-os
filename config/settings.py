@@ -15,10 +15,15 @@ SECRET_KEY = getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 v = getenv("DEBUG")
-DEBUG = True if v == "True" else "False"
+DEBUG = True if v == "True" else False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    'localhost', '127.0.0.1',
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    'localhost'
+]
 
 # Application definition
 
@@ -29,7 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'rest_framework',
+    'rest_framework_simplejwt',
     'cuentas',
     'encomiendas',
     'ubicaciones'
@@ -37,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.security.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,6 +82,35 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    'cuentas.backends.EmailBackend', # Reemplaza 'tu_app' por el nombre de tu aplicación
+    'django.contrib.auth.backends.ModelBackend', # Mantenemos el por defecto como respaldo
+]
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE':20,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    #'DEFAULT_AUTHENTICATION_CLASSES': (
+    #    'rest_framework_simplejwt.authentication.JWTAuthentication',
+    #),
+    #'DEFAULT_PERMISSION_CLASSES': (
+    #    'rest_framework.permissions.IsAuthenticated',
+    #)      
+    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer',]
+}
+
+if DEBUG:
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append('rest_framework.renderers.BrowsableAPIRenderer')
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',)
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -112,6 +148,17 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STORAGES = [
+    "default":{
+        "BACKEND": "django.core.files.storage.FileSystemStorage"
+    },
+    "staticfiles":{
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    }
+]
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
