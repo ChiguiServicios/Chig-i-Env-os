@@ -22,7 +22,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'localhost'
+    'https://localhost'
 ]
 
 # Application definition
