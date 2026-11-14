@@ -18,11 +18,12 @@ v = getenv("DEBUG")
 DEBUG = True if v == "True" else False
 
 ALLOWED_HOSTS = [
-    'localhost', '127.0.0.1',
+    'localhost', '127.0.0.1', 'https://chiguienvios.onrender.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://localhost'
+    'https://localhost',
+    'https://chiguienvios.onrender.com'
 ]
 
 # Application definition
